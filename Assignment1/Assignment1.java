@@ -1,6 +1,26 @@
 import java.util.*;
-class healthcare {
+class Vaccine{
+    private String name;
+    private int dose;
+    private int gap;
 
+    public Vaccine(String naam, int doze, int gaap) {
+        name = naam;
+        dose = doze;
+        gap = gaap;
+    }
+
+    public String getname() {
+        return name;
+    }
+
+    public int getdose() {
+        return dose;
+    }
+
+    public int gap() {
+        return gap;
+    }       
 }
 
 
@@ -8,8 +28,11 @@ class healthcare {
 
 
 public class Assignment1 {
+    ArrayList<Vaccine> vaclist = new ArrayList<Vaccine>();
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
+        Assignment1 as = new Assignment1();
+        Vaccine vc;
         System.out.println("-------------------CoWin Portal------------------");
         System.out.println("-------------------------------------------------");
         System.out.println("1. Add Vaccine");
@@ -35,6 +58,8 @@ public class Assignment1 {
                 System.out.print("Gap between doses: ");
                 int gap = sc.nextInt();
                 sc.nextLine();
+                vc = new Vaccine(name, num, gap);
+                as.vaclist.add(vc);
                 System.out.println("Vaccine Name: "+ name + " ,Number of doses: " + num + " ,Gap between doses: " + gap);
             }
             else if (n == 2) {
@@ -80,7 +105,7 @@ public class Assignment1 {
                 System.out.println("1. Search by Pincode");
                 System.out.println("2. Search by Vaccine");
                 System.out.println("3. Exit");
-                System.out.print("Enter opti: ");
+                System.out.print("Enter option: ");
                 int num = sc.nextInt();
                 System.out.print("Enter Day Number: ");
                 int day = sc.nextInt();
