@@ -49,13 +49,20 @@ class Hospital{
 
 class Citizen{
     private String name;
+    private String vacname;
     private int age;
+    private int doze;
+    private int stdate;
+    private int vacgap;
     private String uid;
+    private String status;
+    private int setstat = 0;
 
     public Citizen(String naam, int num, String id) {
         name = naam;
         age = num;
         uid = id;
+        status = "REGISTERED";
     }
 
     public String getname() {
@@ -68,7 +75,38 @@ class Citizen{
 
     public String getuid() {
         return uid;
-    }       
+    }
+
+    public void addvac(String vcname, int dose, int gap, int date) {
+        vacname = vcname;
+        doze = dose;
+        vacgap = gap;
+        stdate = date;
+    }
+
+    public void setstatus() {
+        setstat++;
+        stdate = vacgap + 1;
+        if (setstat < doze) {
+            status = "PARTIALLY VACCINATED";
+        }
+        if (setstat >= doze) {
+            status = "FULLY VACCINATED";
+        }
+    }
+
+    public String getstatus() {
+        if (status == "REGISTERED") {
+            return "Citizen REGISTERED";
+        }
+        if (status == "PARTIALLY VACCINATED") {
+            return "Vaccine given: " + vacname + "\n" + "Number of doses given: " + setstat + "\n" + "Next dose due date: " + stdate;
+        }
+        if (status == "PARTIALLY VACCINATED") {
+            return "Vaccine given: " + vacname + "\n" + "Number of doses given: " + setstat;
+        }
+        return "\n";
+    }
 }
 
 class Slot{
@@ -99,6 +137,10 @@ class Slot{
     public String getvac() {
         return vac;
     }
+
+    public void setquant() {
+        quant--;
+    }
 }
 
 
@@ -116,7 +158,6 @@ public class Assignment1 {
         Hospital ho;
         Citizen ct;
         Slot st;
-        HashMap<String, String> vmaph = new HashMap<String, String>();
         System.out.println("-------------------CoWin Portal------------------");
         System.out.println("-------------------------------------------------");
         System.out.println("1. Add Vaccine");
@@ -238,7 +279,16 @@ public class Assignment1 {
                     System.out.print("Choose slot: ");
                     int opt = sc.nextInt();
                     sc.nextLine();
-                    System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());    
+                    System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());   
+                    for (int j = 0; j < as.vaclist.size(); j++) {
+                        if (as.vaclist.get(j).getname() == as.slt.get(hmp.get(opt)).getvac()) {
+                            as.janhit.get(i).addvac(as.slt.get(hmp.get(opt)).getvac(), as.vaclist.get(j).getdose(), as.vaclist.get(j).getgap(), as.slt.get(hmp.get(opt)).getday());
+                            break;
+                        }
+                    }
+                    as.janhit.get(i).setstatus();
+                    as.slt.get(hmp.get(opt)).setquant();
+                    
                 }
                 else if (num == 2) {
                     System.out.println("Enter vaccine name: ");
@@ -281,7 +331,15 @@ public class Assignment1 {
                     System.out.print("Choose slot: ");
                     int opt = sc.nextInt();
                     sc.nextLine();
-                    System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());    
+                    System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());
+                    for (int j = 0; j < as.vaclist.size(); j++) {
+                        if (as.vaclist.get(j).getname() == as.slt.get(hmp.get(opt)).getvac()) {
+                            as.janhit.get(i).addvac(as.slt.get(hmp.get(opt)).getvac(), as.vaclist.get(j).getdose(), as.vaclist.get(j).getgap(), as.slt.get(hmp.get(opt)).getday());
+                            break;
+                        }
+                    }
+                    as.janhit.get(i).setstatus();
+                    as.slt.get(hmp.get(opt)).setquant();    
                 }
                 else if (num == 3) {
                     continue;
@@ -296,6 +354,25 @@ public class Assignment1 {
                         System.out.println("Day: " + as.slt.get(j).getday() + " Vaccine: " + as.slt.get(j).getvac() 
                                         + " Available Qty: " + as.slt.get(j).getquant());
                 }
+            }
+            else if (n == 7) {
+                System.out.print("Enter patient Unique ID: ");
+                String uid = sc.next();
+                int i = 0;
+                while (as.janhit.get(i).getuid() != uid) {
+                    if (i < as.janhit.size() - 1) {
+                        i++;
+                    }
+                }
+                if (as.janhit.get(i).getuid() != uid) {
+                    System.out.println("ID incorrect or not present");
+                    continue;
+                }
+                System.out.println(as.janhit.get(i).getstatus());
+            }
+            else if (n == 8) {
+                sc.close();
+                System.exit(0);
             }
 
 
