@@ -18,7 +18,7 @@ class Vaccine{
         return dose;
     }
 
-    public int gap() {
+    public int getgap() {
         return gap;
     }       
 }
@@ -42,7 +42,7 @@ class Hospital{
         return pincode;
     }
 
-    public int uid() {
+    public int getuid() {
         return uid;
     }       
 }
@@ -66,9 +66,39 @@ class Citizen{
         return age;
     }
 
-    public long uid() {
+    public long getuid() {
         return uid;
     }       
+}
+
+class Slot{
+    private int uid;
+    private int day;
+    private int quant;
+    private String vac;
+
+    public Slot(int id, int dai, int quantity, String vaccine) {
+        uid = id;
+        day = dai;
+        quant = quantity;
+        vac = vaccine;
+    }
+
+    public int getuid() {
+        return uid;
+    }
+
+    public int getday() {
+        return day;
+    }
+
+    public int getquant() {
+        return quant;
+    }
+
+    public String getvac() {
+        return vac;
+    }
 }
 
 
@@ -78,12 +108,14 @@ public class Assignment1 {
     ArrayList<Vaccine> vaclist = new ArrayList<Vaccine>();
     ArrayList<Hospital> hoslist = new ArrayList<Hospital>();
     ArrayList<Citizen> janhit = new ArrayList<Citizen>();
+    ArrayList<Slot> slt = new ArrayList<Slot>();
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Assignment1 as = new Assignment1();
         Vaccine vc;
         Hospital ho;
         Citizen ct;
+        Slot st;
         System.out.println("-------------------CoWin Portal------------------");
         System.out.println("-------------------------------------------------");
         System.out.println("1. Add Vaccine");
@@ -157,24 +189,56 @@ public class Assignment1 {
                     int selection = sc.nextInt();
                     System.out.println("Slot added by Hospital "+ uid + " for Day: " + day + " ,Available Quantity: " + quant + " of Vaccine " + 
                                         as.vaclist.get(selection).getname());
+                    st = new Slot(uid, day, quant, as.vaclist.get(selection).getname());
+                    as.slt.add(st);
                 }
             }
 
             else if (n == 5) {
                 System.out.print("Enter patient Unique ID: ");
-                int uid = sc.nextInt();
-                System.out.println("1. Search by Pincode");
+                long uid = sc.nextLong();
+                int i = 0;
+                while (as.janhit.get(i).getuid() != uid) {
+                    if (i < as.janhit.size() - 1) {
+                        i++;
+                    }
+                }
+                if (as.janhit.get(i).getuid() != uid) {
+                    System.out.println("ID incorrect or not present");
+                    continue;
+                }
+                System.out.println("1. Search by area");
                 System.out.println("2. Search by Vaccine");
                 System.out.println("3. Exit");
                 System.out.print("Enter option: ");
                 int num = sc.nextInt();
-                System.out.print("Enter Day Number: ");
-                int day = sc.nextInt();
-                System.out.print("Enter quantity: ");
-                int quant = sc.nextInt();
-                System.out.print("Select Vaccine: ");
-                int selection = sc.nextInt();
-                System.out.println("Slot added by Hospital "+ uid + " for Day " + day + " ,Available Quantity: " + quant + " Vaccine ");
+                if (num == 1) {
+                    System.out.print("Enter pincode: ");
+                    int pin = sc.nextInt();
+                    sc.nextLine();
+                    for (int j = 0; j < as.hoslist.size(); j++) {
+                        if (as.hoslist.get(j).getpincode() == pin)
+                            System.out.println(as.hoslist.get(j).getuid() + " " + as.hoslist.get(j).getname());
+                    }
+                    System.out.print("Enter hospital Unique ID: ");
+                    int id = sc.nextInt();
+                    sc.nextLine();
+                    int sno = 0;
+                    HashMap<Integer, Integer> hmp = new HashMap<>();
+                    for (int j = 0; j < as.slt.size(); j++) {
+                        if (as.slt.get(j).getuid() == id) {
+                            hmp.put(sno, j);
+                            System.out.println(sno + " -> " + "Day: " + as.slt.get(j).getday() + " Available Qty: " + as.slt.get(j).getquant()
+                                               + " Vaccine: " + as.slt.get(j).getvac());
+                            sno++;
+                        }
+                    }
+                    System.out.print("Choose slot: ");
+                    int opt = sc.nextInt();
+                    sc.nextLine();
+                    System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());    
+                }
+                
                 
             }
 
