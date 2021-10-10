@@ -50,9 +50,9 @@ class Hospital{
 class Citizen{
     private String name;
     private int age;
-    private long uid;
+    private String uid;
 
-    public Citizen(String naam, int num, long id) {
+    public Citizen(String naam, int num, String id) {
         name = naam;
         age = num;
         uid = id;
@@ -66,7 +66,7 @@ class Citizen{
         return age;
     }
 
-    public long getuid() {
+    public String getuid() {
         return uid;
     }       
 }
@@ -105,10 +105,10 @@ class Slot{
 
 
 public class Assignment1 {
-    ArrayList<Vaccine> vaclist = new ArrayList<Vaccine>();
-    ArrayList<Hospital> hoslist = new ArrayList<Hospital>();
-    ArrayList<Citizen> janhit = new ArrayList<Citizen>();
-    ArrayList<Slot> slt = new ArrayList<Slot>();
+    private ArrayList<Vaccine> vaclist = new ArrayList<Vaccine>();
+    private ArrayList<Hospital> hoslist = new ArrayList<Hospital>();
+    private ArrayList<Citizen> janhit = new ArrayList<Citizen>();
+    private ArrayList<Slot> slt = new ArrayList<Slot>();
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Assignment1 as = new Assignment1();
@@ -116,6 +116,7 @@ public class Assignment1 {
         Hospital ho;
         Citizen ct;
         Slot st;
+        HashMap<String, String> vmaph = new HashMap<String, String>();
         System.out.println("-------------------CoWin Portal------------------");
         System.out.println("-------------------------------------------------");
         System.out.println("1. Add Vaccine");
@@ -128,7 +129,6 @@ public class Assignment1 {
         System.out.println("8. Exit");
         System.out.println("-------------------------------------------------");
         int counth = 100000;
-        long countp = 100000000000L;
         while(true) {
             System.out.print("Enter your option: ");
             int n = sc.nextInt();
@@ -162,7 +162,9 @@ public class Assignment1 {
                 System.out.print("Age: ");
                 int num = sc.nextInt();
                 sc.nextLine();
-                long uid = ++countp;
+                System.out.print("Unique ID: ");
+                String uid = sc.next();
+                sc.nextLine();
                 System.out.println("Citizen Name: "+ name + " ,Age: " + num + " ,Unique ID: " + uid);
                 if (num <= 18) {
                     System.out.println("Only above 18 are allowed.");
@@ -196,7 +198,7 @@ public class Assignment1 {
 
             else if (n == 5) {
                 System.out.print("Enter patient Unique ID: ");
-                long uid = sc.nextLong();
+                String uid = sc.next();
                 int i = 0;
                 while (as.janhit.get(i).getuid() != uid) {
                     if (i < as.janhit.size() - 1) {
@@ -238,9 +240,65 @@ public class Assignment1 {
                     sc.nextLine();
                     System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());    
                 }
-                
-                
+                else if (num == 2) {
+                    System.out.println("Enter vaccine name: ");
+                    String name = sc.next();
+                    sc.nextLine();
+                    ArrayList<Integer> vactoUid = new ArrayList<>();
+                    ArrayList<String> Uidtoname = new ArrayList<>();
+                    for (int j = 0; j < as.slt.size(); j++) {
+                        if (as.slt.get(j).getvac() == name && !vactoUid.contains(as.slt.get(j).getuid())) {
+                            vactoUid.add(as.slt.get(j).getuid());
+                        }
+                    }
+                    for (int j = 0; j < vactoUid.size(); j++) {
+                        for (int k = 0; k < as.hoslist.size(); k++) {
+                            if (vactoUid.get(j) == as.hoslist.get(k).getuid() && !Uidtoname.contains(as.hoslist.get(k).getname())) {
+                                Uidtoname.add(as.hoslist.get(k).getname());
+                            }
+                        }  
+                    }
+                    for (int j = 0; j < vactoUid.size(); j++) {
+                        System.out.println(vactoUid.get(j) + " " + Uidtoname.get(j));
+                    }
+                    System.out.print("Enter hospital ID: ");
+                    int id = sc.nextInt();
+                    sc.nextLine();
+                    if (!vactoUid.contains(id)) {
+                        System.out.println("Error: ID incorrect.");
+                        continue;
+                    }
+                    int sno = 0;
+                    HashMap<Integer, Integer> hmp = new HashMap<>();
+                    for (int j = 0; j < as.slt.size(); j++) {
+                        if (as.slt.get(j).getuid() == id) {
+                            hmp.put(sno, j);
+                            System.out.println(sno + " -> " + "Day: " + as.slt.get(j).getday() + " Available Qty: " + as.slt.get(j).getquant()
+                                               + " Vaccine: " + as.slt.get(j).getvac());
+                            sno++;
+                        }
+                    }
+                    System.out.print("Choose slot: ");
+                    int opt = sc.nextInt();
+                    sc.nextLine();
+                    System.out.println(as.janhit.get(i).getname() + " vaccinated with " + as.slt.get(hmp.get(opt)).getvac());    
+                }
+                else if (num == 3) {
+                    continue;
+                }
             }
+            else if (n == 6) {
+                System.out.print("Enter hospital ID: ");
+                int id = sc.nextInt();
+                sc.nextLine();
+                for (int j = 0; j < as.slt.size(); j++) {
+                    if (as.slt.get(j).getuid() == id)
+                        System.out.println("Day: " + as.slt.get(j).getday() + " Vaccine: " + as.slt.get(j).getvac() 
+                                        + " Available Qty: " + as.slt.get(j).getquant());
+                }
+            }
+
+
 
             
 
