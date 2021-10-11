@@ -413,7 +413,7 @@ public class Assignment1 {
                     HashMap<Integer, Integer> hmp = new HashMap<>();
                     for (int j = 0; j < as.slt.size(); j++) {
                         if (as.slt.get(j).getuid() == id && as.slt.get(j).getvac().equals(name)) {
-                            if (as.janhit.get(i).getdate() <= as.slt.get(j).getday()) {
+                            if (as.janhit.get(i).getdate() <= as.slt.get(j).getday() && as.slt.get(j).getquant() != 0) {
                                 hmp.put(sno, j);
                                 System.out.println(sno + " -> " + "Day: " + as.slt.get(j).getday() + " Available Qty: " + as.slt.get(j).getquant()
                                                 + " Vaccine: " + as.slt.get(j).getvac());
