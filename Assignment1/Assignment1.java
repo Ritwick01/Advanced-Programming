@@ -471,6 +471,10 @@ public class Assignment1 {
                 System.out.print("Enter hospital ID: ");
                 int id = sc.nextInt();
                 sc.nextLine();
+                if (!as.hosid.contains(id)) {
+                    System.out.println("Wrong hospital ID input.");
+                    continue;
+                }
                 for (int j = 0; j < as.slt.size(); j++) {
                     if (as.slt.get(j).getuid() == id)
                         System.out.println("Day: " + as.slt.get(j).getday() + " Vaccine: " + as.slt.get(j).getvac() 
