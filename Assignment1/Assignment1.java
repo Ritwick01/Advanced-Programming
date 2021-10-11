@@ -92,7 +92,7 @@ class Citizen{
         return stdate;
     }
 
-    public String setstatus() {
+    public void setstatus() {
         stdate = vacgap + stdate;
         if (setstat < doze) {
             status = "PARTIALLY VACCINATED";
@@ -107,7 +107,6 @@ class Citizen{
             status = "FULLY VACCINATED";
         }
 
-        return status;
     }
 
     public int getdoze() {
@@ -116,6 +115,10 @@ class Citizen{
 
     public int getstat() {
         return setstat;
+    }
+
+    public String getvaccine() {
+        return status;
     }
 
     public String getstatus() {
@@ -301,6 +304,10 @@ public class Assignment1 {
                 }
                 if (i == as.janhit.size()) {
                     System.out.println("Patient Unique ID does not exist in system.");
+                    continue;
+                }
+                if (as.janhit.get(i).getvaccine().equals("FULLY VACCINATED")) {
+                    System.out.println("Already vaccinated.");
                     continue;
                 }
                 System.out.println("1. Search by area");
