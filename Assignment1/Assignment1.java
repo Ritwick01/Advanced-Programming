@@ -98,9 +98,15 @@ class Citizen{
             status = "PARTIALLY VACCINATED";
             setstat++;
         }
+
+        if (status == "FULLY VACCINATED") {
+            setstat++;
+        }
+
         if (setstat == doze) {
             status = "FULLY VACCINATED";
         }
+
         return status;
     }
 
@@ -120,7 +126,7 @@ class Citizen{
             return "PARTIALLY VACCINATED\nVaccine given: " + vacname + "\n" + "Number of doses given: " + setstat + "\n" + "Next dose due date: " + stdate;
         }
         if (status == "FULLY VACCINATED") {
-            return "FULLY VACCINATED\nVaccine given: " + vacname + "\n" + "Number of doses given: " + setstat;
+            return "FULLY VACCINATED\nVaccine given: " + vacname + "\n" + "Number of doses given: " + doze;
         }
         return "\n";
     }
@@ -393,7 +399,7 @@ public class Assignment1 {
                     int id = sc.nextInt();
                     sc.nextLine();
                     if (!vactoUid.contains(id)) {
-                        System.out.println("Error: ID incorrect.");
+                        System.out.println("Error: Incorrect information given.");
                         continue;
                     }
                     int sno = 0;
