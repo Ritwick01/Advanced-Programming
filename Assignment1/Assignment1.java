@@ -319,9 +319,16 @@ public class Assignment1 {
                     System.out.print("Enter pincode: ");
                     int pin = sc.nextInt();
                     sc.nextLine();
+                    int cnt = 0;
                     for (int j = 0; j < as.hoslist.size(); j++) {
-                        if (as.hoslist.get(j).getpincode() == pin)
+                        if (as.hoslist.get(j).getpincode() == pin) {
+                            cnt = 1;
                             System.out.println(as.hoslist.get(j).getuid() + " " + as.hoslist.get(j).getname());
+                        }
+                    }
+                    if (cnt == 0) {
+                        System.out.println("No hospital in the area.");
+                        continue;
                     }
                     System.out.print("Enter hospital Unique ID: ");
                     int id = sc.nextInt();
@@ -385,6 +392,16 @@ public class Assignment1 {
                     System.out.print("Enter vaccine name: ");
                     String name = sc.next();
                     System.out.println();
+                    int cnt = 0;
+                    for (int k = 0; k < as.vaclist.size(); k++) {
+                        if(as.vaclist.get(k).getname().equals(name)) {
+                            cnt = 1;
+                        }
+                    }
+                    if (cnt == 0) {
+                        System.out.println("No such vaccine exists in system.");
+                        continue;
+                    }
                     ArrayList<Integer> vactoUid = new ArrayList<>();
                     ArrayList<String> Uidtoname = new ArrayList<>();
                     for (int j = 0; j < as.slt.size(); j++) {
