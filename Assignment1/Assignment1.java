@@ -164,18 +164,19 @@ class Slot{
 
 
 public class Assignment1 {
-    private ArrayList<Vaccine> vaclist = new ArrayList<Vaccine>();
-    private ArrayList<Hospital> hoslist = new ArrayList<Hospital>();
-    private ArrayList<Citizen> janhit = new ArrayList<Citizen>();
-    private ArrayList<Slot> slt = new ArrayList<Slot>();
-    private ArrayList<String> checkid = new ArrayList<>();
+    private final ArrayList<Vaccine> vaclist = new ArrayList<Vaccine>();
+    private final ArrayList<Hospital> hoslist = new ArrayList<Hospital>();
+    private final ArrayList<Citizen> janhit = new ArrayList<Citizen>();
+    private final ArrayList<Slot> slt = new ArrayList<Slot>();
+    private final ArrayList<String> checkid = new ArrayList<>();
+    private final ArrayList<Integer> hosid = new ArrayList<>();
+    private Vaccine vc;
+    private Hospital ho;
+    private Citizen ct;
+    private Slot st;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         Assignment1 as = new Assignment1();
-        Vaccine vc;
-        Hospital ho;
-        Citizen ct;
-        Slot st;
         int counth = 100000;
         while(true) {
             System.out.println("-------------------CoWin Portal------------------");
@@ -203,8 +204,8 @@ public class Assignment1 {
                     gap = sc.nextInt();
                 }
                 sc.nextLine();
-                vc = new Vaccine(name, num, gap);
-                as.vaclist.add(vc);
+                as.vc = new Vaccine(name, num, gap);
+                as.vaclist.add(as.vc);
                 System.out.println("Vaccine Name: "+ name + " , Number of doses: " + num + " , Gap between doses: " + gap);
             }
             else if (n == 2) {
@@ -218,8 +219,9 @@ public class Assignment1 {
                 }
                 sc.nextLine();
                 int uid = ++counth;
-                ho = new Hospital(name, num, uid);
-                as.hoslist.add(ho);
+                as.ho = new Hospital(name, num, uid);
+                as.hoslist.add(as.ho);
+                as.hosid.add(uid);
                 System.out.println("Hospital Name: "+ name + " , Pincode: " + num + " , Unique ID: " + uid);
             }
             else if (n == 3) {
@@ -236,14 +238,14 @@ public class Assignment1 {
                         continue;
                     }
                     sc.nextLine();
-                    System.out.println("Citizen Name: "+ name + " , Age: " + num + " , Unique ID: " + uid);
                     if (num <= 18) {
                         System.out.println("Only above 18 are allowed.");
                         continue;
                     }
                     else {
-                        ct = new Citizen(name, num, uid);
-                        as.janhit.add(ct);
+                        System.out.println("Citizen Name: "+ name + " , Age: " + num + " , Unique ID: " + uid);
+                        as.ct = new Citizen(name, num, uid);
+                        as.janhit.add(as.ct);
                         as.checkid.add(uid);
                     }
                 }
@@ -255,6 +257,10 @@ public class Assignment1 {
             else if (n == 4) {
                 System.out.print("Enter Hospital ID: ");
                 int uid = sc.nextInt();
+                if (!as.hosid.contains(uid)) {
+                    System.out.println("Wrong ID entered. Please try again.");
+                    continue;
+                }
                 System.out.print("Enter Number of slots: ");
                 int num = sc.nextInt();
                 for (int i = 0; i < num; ++i) {
@@ -272,8 +278,8 @@ public class Assignment1 {
                     int selection = sc.nextInt();
                     System.out.println("Slot added by Hospital "+ uid + " for Day: " + day + " ,Available Quantity: " + quant + " of Vaccine " + 
                                         as.vaclist.get(selection).getname());
-                    st = new Slot(uid, day, quant, as.vaclist.get(selection).getname());
-                    as.slt.add(st);
+                    as.st = new Slot(uid, day, quant, as.vaclist.get(selection).getname());
+                    as.slt.add(as.st);
                 }
             }
 
@@ -283,11 +289,14 @@ public class Assignment1 {
                 sc.nextLine();
                 int i = 0;
                 for (i = 0; i < as.janhit.size(); i++) {
-                    if (as.janhit.get(i).getuid() == uid) {
+                    if (as.janhit.get(i).getuid().equals(uid)) {
                         break;
                     }
                 }
-                
+                if (i == as.janhit.size()) {
+                    System.out.println("Patient Unique ID does not exist in system.");
+                    continue;
+                }
                 System.out.println("1. Search by area");
                 System.out.println("2. Search by Vaccine");
                 System.out.println("3. Exit");
@@ -461,9 +470,14 @@ public class Assignment1 {
                 sc.nextLine();
                 int j = 0;
                 for (j = 0; j < as.janhit.size(); j++) {
-                    if (as.janhit.get(j).getuid() == uidi) {
+                    if (as.janhit.get(j).getuid().equals(uidi)) {
                         break;
                     }
+                }
+
+                if (j == as.janhit.size()) {
+                    System.out.println("Patient Unique ID does not exist in system.");
+                    continue;
                 }
                 
                 System.out.println(as.janhit.get(j).getstatus());
