@@ -1,7 +1,9 @@
 import java.util.*;
+import java.sql.Timestamp;
+import java.util.Date;
 
-class Instructors {
-    
+class Instructors implements Same {
+
 }
 
 class Backpack {
@@ -9,6 +11,11 @@ class Backpack {
     private int stu;
     private ArrayList<String> instructor = new ArrayList<>();
     private ArrayList<String> student = new ArrayList<>();
+    private ArrayList<String> matrial = new ArrayList<>();
+
+    public ArrayList<String> getmat() {
+        return matrial;
+    }
 
     public void start() {
         Scanner sc = new Scanner(System.in);
@@ -60,6 +67,47 @@ class Backpack {
                     System.out.println("9. Logout");
                     System.out.println("--------------------------------------------------------");
                     int z = sc.nextInt();
+                    if (z == 1) {
+                        Timestamp timest = new Timestamp(System.currentTimeMillis());  
+                        Date date = new Date(timest.getTime()); 
+                        String time = String.format("%tc", date );
+                        System.out.println("1. Add Lecture Slide.");
+                        System.out.println("2. Add Lecture Video.");
+                        int opt = sc.nextInt();
+                        if (opt == 1) {
+                            System.out.println("Enter topic of slides: ");
+                            String name = sc.nextLine();
+                            System.out.println("Enter number of slides: ");
+                            int num = sc.nextInt();
+                            matrial.add("Title" + name);
+                            matrial.add("Number of slides" + Integer.toString(num));
+                            System.out.println("Enter content of slides: ");
+                            for (int i = 0; i < num; i++) {
+                                System.out.print("Content of slide " + (i+1) + ":");
+                                matrial.add("Slide " + (i+1) + " " + sc.nextLine());
+                            }
+                            matrial.add("Date of upload " + time);
+                            matrial.add("Uploaded by: " + instructor.get(m));
+                        }
+                        else if (opt == 2) {
+                            System.out.println("Enter topic of video: ");
+                            String topic = sc.nextLine();
+                            System.out.println("Enter filename of video: ");
+                            String name = sc.nextLine();
+                            if (name.length() > 4) {
+                                if (name.substring(name.length() - 4, name.length()).equals(".mp4")) {
+                                    matrial.add("Title of video " + topic);
+                                    matrial.add("Video file " + name);
+                                    matrial.add("Date of upload " + time);
+                                    matrial.add("Uploaded by " + instructor.get(m));
+                                }
+                            }
+                            else {
+                                System.out.println("Incorrect file format.");
+                                continue;
+                            }
+                        }
+                    }
                 }
             }
         }
