@@ -2,6 +2,17 @@ import java.util.*;
 import java.sql.Timestamp;
 import java.util.Date;
 
+class assessment {
+
+    public assessment(String ques) {
+
+    }
+
+    public assessment(String ques, int marks) {
+        
+    }
+}
+
 class Instructors implements Same {
 
 }
@@ -107,6 +118,15 @@ class Backpack {
                                 continue;
                             }
                         }
+                    }
+                    else if (z == 2) {
+                        System.out.println("1. Add Assignment.");
+                        System.out.println("2. Add Quiz.");
+                        int opt = sc.nextInt();
+                        if (opt == 1) {
+
+                        }
+
                     }
                 }
             }
