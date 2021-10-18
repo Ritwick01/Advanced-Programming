@@ -1,6 +1,9 @@
-import java.util.ArrayList;
-
 import java.util.*;
+
+class Instructors {
+    
+}
+
 class Backpack {
     private int intuct;
     private int stu;
@@ -42,6 +45,22 @@ class Backpack {
                 }
                 System.out.println("Choose ID: ");
                 int m = sc.nextInt();
+                System.out.println();
+                while (true) {
+                    System.out.println("Welcome " + instructor.get(m));
+                    System.out.println("------------------Instructor's Menu---------------------");
+                    System.out.println("1. Add class material");
+                    System.out.println("2. Add assessments");
+                    System.out.println("3. View lecture materials");
+                    System.out.println("4. View assessments");
+                    System.out.println("5. Grade assessments");
+                    System.out.println("6. Close assessment");
+                    System.out.println("7. View comments");
+                    System.out.println("8. Add comments");
+                    System.out.println("9. Logout");
+                    System.out.println("--------------------------------------------------------");
+                    int z = sc.nextInt();
+                }
             }
         }
     }
