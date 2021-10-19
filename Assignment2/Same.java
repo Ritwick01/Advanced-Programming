@@ -22,13 +22,10 @@ public interface Same {
             System.out.println("--------------------------------------");    
         }
     }
-    default void vwcomments() {
-
+    default void vwcomments(ArrayList<String> arr) {
+        for (int i = 0; i < arr.size(); i++) {
+            System.out.println(arr.get(i));
+        }
     }
-    default void addcomments() {
-
-    }
-    default void logout() {
-
-    }
+    
 }

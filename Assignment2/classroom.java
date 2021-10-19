@@ -1,12 +1,15 @@
 import java.util.*;
 import java.sql.Timestamp;
-import java.util.Date;
 
 class assessment {
     private String q;
     private int num = 1;
     private String istatus = "OPEN";
     private String sstatus = "PENDING";
+    private String gradestat = "UNGRADED";
+    private String answ;
+    private float marks = 0;
+    private String instruct;
 
     public assessment(String ques) {
         q = ques;
@@ -25,6 +28,26 @@ class assessment {
         return "Assignment: " + q + " Max Marks: " + Integer.toString(num);
     }
 
+    public int maxmarks() {
+        return num;
+    }
+
+    public void setmarks(float mark) {
+        marks = mark;
+    }
+
+    public float getmarks() {
+        return marks;
+    }
+
+    public void setansw(String answer) {
+        answ = answer;
+    }
+
+    public String getansw() {
+        return answ;
+    }
+
     public void setistatus() {
         istatus = "CLOSED";
     }
@@ -40,6 +63,22 @@ class assessment {
     public String getsstatus() {
         return sstatus;
     }
+
+    public void setgradstat() {
+        gradestat = "GRADED";
+    }
+
+    public String getgradstat() {
+        return gradestat;
+    }
+
+    public void setinstruct(String name) {
+        instruct = name;
+    }
+
+    public String getinstruct() {
+        return instruct;
+    }
 }
 
 class Instructors implements Same {
@@ -52,15 +91,67 @@ class Instructors implements Same {
 
 }
 
+class Student implements Same {
+    private String name;
+    private ArrayList<assessment> q;
+    private ArrayList<assessment> a;
+
+    public Student(ArrayList<assessment> quiz, ArrayList<assessment> assess, String naam) {
+        name = naam;
+        q = quiz;
+        a = assess;
+    }
+
+    public void updatequiz(ArrayList<assessment> quiz) {
+        if (q.size() < quiz.size()) {
+            for (int i = q.size(); i < quiz.size(); i++) {
+                q.add(quiz.get(i));
+            }
+        }
+    }
+
+    public void updateassess(ArrayList<assessment> assess) {
+        if (a.size() < assess.size()) {
+            for (int i = a.size(); i < assess.size(); i++) {
+                a.add(assess.get(i));
+            }
+        }
+    }
+
+    public ArrayList<assessment> getquiz() {
+        return q;
+    }
+
+    public ArrayList<assessment> getassess() {
+        return a;
+    }
+
+    public void closequiz(int m) {
+        q.get(m).setistatus();
+    }
+
+    public void closeassess(int m) {
+        a.get(m).setistatus();
+    }
+
+    public String getname() {
+        return name;
+    }
+    
+}
+
 class Backpack {
     private int intuct;
     private int stu;
     private Instructors inst = new Instructors();
+    private Student st;
     private ArrayList<String> instructor = new ArrayList<>();
     private ArrayList<String> student = new ArrayList<>();
+    private ArrayList<Student> stlist = new ArrayList<>();
     private ArrayList<String> matrial = new ArrayList<String>();
     private ArrayList<assessment> quiz = new ArrayList<>();
     private ArrayList<assessment> assess = new ArrayList<>();
+    private ArrayList<String> comments = new ArrayList<>();
 
     public void start() {
         Scanner sc = new Scanner(System.in);
@@ -80,8 +171,12 @@ class Backpack {
             System.out.print("Student name: ");
             String name = sc.nextLine();
             student.add(name);
+            st = new Student(quiz, assess, name);
+            stlist.add(st);
         }
         System.out.println();
+        Timestamp timest = new Timestamp(System.currentTimeMillis());  
+        Date date = new Date(timest.getTime()); 
         int n;
         while(true) {
             System.out.println("-------------------Welcome to Backpack------------------");
@@ -113,8 +208,6 @@ class Backpack {
                     System.out.println("--------------------------------------------------------");
                     int z = sc.nextInt();
                     if (z == 1) {
-                        Timestamp timest = new Timestamp(System.currentTimeMillis());  
-                        Date date = new Date(timest.getTime()); 
                         String time = String.format("%tc", date );
                         System.out.println("1. Add Lecture Slide.");
                         System.out.println("2. Add Lecture Video.");
@@ -182,6 +275,53 @@ class Backpack {
                         inst.vwassess(quiz, assess);
                     }
                     else if (z == 5) {
+                        inst.vwassess(quiz, assess);
+                        HashMap<Integer, Integer> record = new HashMap<>();
+                        int count = 0;
+                        System.out.println("Enter ID of assessment to view submission: ");
+                        int id = sc.nextInt();
+                        if (id < quiz.size()) {
+                            for (int i = 0; i < stu; i++) {
+                                if (stlist.get(i).getquiz().get(id).getsstatus().equals("SUBMITTED")) {
+                                    System.out.println(count + ". " + stlist.get(i).getname());
+                                    record.put(count, i);
+                                    count++;
+                                }
+                            }
+                        }
+                        else if (id >= quiz.size() && id < (quiz.size()+ assess.size())) {
+                            for (int i = 0; i < stu; i++) {
+                                if (stlist.get(i).getassess().get(id).getsstatus().equals("SUBMITTED")) {
+                                    System.out.println(count + ". " + stlist.get(i).getname());
+                                    record.put(count, i);
+                                    count++;
+                                }
+                            }
+                        }
+                        System.out.println("Enter number: ");
+                        int idx = sc.nextInt();
+                        if (record.get(id) < quiz.size()) {
+                            System.out.println("Submission: " + stlist.get(record.get(idx)).getquiz().get(id).getansw());
+                            System.out.println("-------------------------------");
+                            System.out.println("Max marks: " + quiz.get(id).maxmarks());
+                            System.out.println("Marks scored: ");
+                            float marks = sc.nextFloat();
+                            stlist.get(record.get(idx)).getquiz().get(id).setmarks(marks);
+                            stlist.get(record.get(idx)).getquiz().get(id).setgradstat();
+                            stlist.get(record.get(idx)).getquiz().get(id).setinstruct(instructor.get(m));
+                        }
+                        else if (record.get(id) >= quiz.size() && record.get(id) < (quiz.size()+ assess.size())) {
+                            System.out.println("Submission: " + stlist.get(record.get(idx)).getassess().get(id).getansw());
+                            System.out.println("-------------------------------");
+                            System.out.println("Max marks: " + assess.get(id).maxmarks());
+                            System.out.println("Marks scored: ");
+                            float marks = sc.nextFloat();
+                            stlist.get(record.get(idx)).getassess().get(id).setmarks(marks);
+                            stlist.get(record.get(idx)).getassess().get(id).setgradstat();
+                            stlist.get(record.get(idx)).getassess().get(id).setinstruct(instructor.get(m));
+                        }
+                        
+
 
                     }
                     else if (z == 6) {
@@ -208,16 +348,153 @@ class Backpack {
                         }
                         System.out.println("Enter ID of assessment to close: ");
                         int id = sc.nextInt();
-                        if (id < quiz.size()) {
+                        if (record.get(id) < quiz.size()) {
                             inst.setstatus(quiz.get(record.get(id)));
+                            for (int i = 0; i < stu; i++) {
+                                stlist.get(i).closequiz(record.get(id));
+                            }
                         }
-                        else if (id >= quiz.size() && id < (quiz.size()+ assess.size())) {
+                        else if (record.get(id) >= quiz.size() && record.get(id) < (quiz.size()+ assess.size())) {
                             inst.setstatus(assess.get(record.get(id)));
+                            for (int i = 0; i < stu; i++) {
+                                stlist.get(i).closeassess(record.get(id));
+                            }
                         }
+                    }
+                    else if (z == 7) {
+                        inst.vwcomments(comments);
+                    }
+
+                    else if (z == 8) {
+                        sc.nextLine();
+                        System.out.print("Enter comment:");
+                        String com = sc.nextLine();
+                        comments.add(com + " - " + instructor.get(m));
+                        String time = String.format("%tc", date );
+                        comments.add(time);
+                    }
+                    else if (z == 9) {
+                        break;
                     }
                 }
             }
+            else if (n == 2) {
+                for (int i = 0; i < stu; ++i) {
+                    System.out.println(i + " - " + student.get(i));
+                }
+                System.out.println("Choose ID: ");
+                int m = sc.nextInt();
+                System.out.println();
+                while(true) {
+                    System.out.println("Welcome " + student.get(m));
+                    System.out.println("------------------Student's Menu---------------------");
+                    System.out.println("1. View lecture materials");
+                    System.out.println("2. View assessments");
+                    System.out.println("3. Submit assessments");
+                    System.out.println("4. View Grades");
+                    System.out.println("5. View comments");
+                    System.out.println("6. Add comments");
+                    System.out.println("7. Logout");
+                    System.out.println("--------------------------------------------------------");
+                    int z = sc.nextInt();
+                    if (z == 1) {
+                        st.vwlecmat(matrial);
+                    }
+                    else if (z == 2) {
+                        st.vwassess(quiz, assess);
+                    }
+                    else if (z == 3) {
+                        System.out.println("Pending assessments: ");
+                        int count = 0;
+                        HashMap<Integer, Integer> record = new HashMap<>();
+                        System.out.println("Quizzes");
+                        for (int i = 0; i < quiz.size(); ++i) {
+                            if (stlist.get(m).getquiz().get(i).getistatus().equals("OPEN") && stlist.get(m).getquiz().get(i).getsstatus().equals("PENDING")) {
+                                System.out.println("ID: " + count + " " + quiz.get(i).getquiz()); 
+                                System.out.println("--------------------------------------");
+                                record.put(count, i);
+                                count++;
+                            }    
+                        }
+                        System.out.println("Assignments");
+                        for (int i = 0; i < assess.size(); ++i) {
+                            if (stlist.get(m).getassess().get(i).getistatus().equals("OPEN") && stlist.get(m).getassess().get(i).getsstatus().equals("PENDING")) {
+                                System.out.println("ID: " + (count) + " " + assess.get(i).getassess());     
+                                System.out.println("--------------------------------------"); 
+                                record.put(count, i);
+                                count++; 
+                            }
+                        }
+                        System.out.println("Enter ID of assessment: ");
+                        int id = sc.nextInt();
+                        sc.nextLine();
+                        if (record.get(id) < quiz.size()) {
+                            System.out.println(quiz.get(record.get(id)).getquiz());
+                            String ans = sc.nextLine();
+                            stlist.get(m).getquiz().get(record.get(id)).setansw(ans);
+                            stlist.get(m).getquiz().get(record.get(id)).setsstatus();
+                        }
+                        else if (record.get(id) >= quiz.size() && record.get(id) < (quiz.size()+ assess.size())) {
+                            System.out.println("Enter filename of assignment: ");
+                            String ans = sc.nextLine();
+                            stlist.get(m).getassess().get(record.get(id)).setansw(ans);
+                            stlist.get(m).getassess().get(record.get(id)).setsstatus();;
+                        }
+
+                    }
+                    else if (z == 4) {
+                        System.out.println("Graded submissions: ");
+                        for (int i = 0; i < quiz.size(); i++) {
+                            if (stlist.get(m).getquiz().get(i).getgradstat().equals("GRADED")) {
+                                System.out.println("Submission: " + stlist.get(m).getquiz().get(i).getansw());
+                                System.out.println("Marks scored: " + stlist.get(m).getquiz().get(i).getmarks());
+                                System.out.println("Graded by: " + stlist.get(m).getquiz().get(i).getinstruct());
+                            }
+                        }
+
+                        for (int i = 0; i < assess.size(); i++) {
+                            if (stlist.get(m).getassess().get(i).getgradstat().equals("GRADED")) {
+                                System.out.println("Submission: " + stlist.get(m).getassess().get(i).getansw());
+                                System.out.println("Marks scored: " + stlist.get(m).getassess().get(i).getmarks());
+                                System.out.println("Graded by: " + stlist.get(m).getassess().get(i).getinstruct());
+                            }
+                        }
+
+                        System.out.println("Ungraded submissions: ");
+                        for (int i = 0; i < quiz.size(); i++) {
+                            if (stlist.get(m).getquiz().get(i).getgradstat().equals("UNGRADED") && stlist.get(m).getquiz().get(i).getsstatus().equals("SUBMITTED")) {
+                                System.out.println("Submission: " + stlist.get(m).getquiz().get(i).getansw());
+                            }
+                        }
+
+                        for (int i = 0; i < assess.size(); i++) {
+                            if (stlist.get(m).getassess().get(i).getgradstat().equals("UNGRADED") && stlist.get(m).getassess().get(i).getsstatus().equals("SUBMITTED")) {
+                                System.out.println("Submission: " + stlist.get(m).getassess().get(i).getansw());
+                            }
+                        }
+                    }
+                    else if (z == 7) {
+                        st.vwcomments(comments);
+                    }
+                    else if (z == 6) {
+                        sc.nextLine();
+                        System.out.print("Enter comment:");
+                        String com = sc.nextLine();
+                        comments.add(com + " - " + student.get(m));
+                        String time = String.format("%tc", date );
+                        comments.add(time);
+                    }
+
+                    else if (z == 7) {
+                        break;
+                    }
+                }
+            }
+            else if (n == 3) {
+                break;
+            }
         }
+        sc.close();
     }
 }
 
