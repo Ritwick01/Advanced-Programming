@@ -98,8 +98,8 @@ class Student implements Same {
 
     public Student(ArrayList<assessment> quiz, ArrayList<assessment> assess, String naam) {
         name = naam;
-        q = quiz;
         a = assess;
+        q = quiz;
     }
 
     public void updatequiz(ArrayList<assessment> quiz) {
@@ -144,14 +144,14 @@ class Backpack {
     private int intuct;
     private int stu;
     private Instructors inst = new Instructors();
-    private Student st;
     private ArrayList<String> instructor = new ArrayList<>();
     private ArrayList<String> student = new ArrayList<>();
-    private ArrayList<Student> stlist = new ArrayList<>();
+    private ArrayList<Student> stlist = new ArrayList<Student>();
     private ArrayList<String> matrial = new ArrayList<String>();
     private ArrayList<assessment> quiz = new ArrayList<>();
     private ArrayList<assessment> assess = new ArrayList<>();
     private ArrayList<String> comments = new ArrayList<>();
+    private Student st;
 
     public void start() {
         Scanner sc = new Scanner(System.in);
@@ -252,6 +252,7 @@ class Backpack {
                         System.out.println("1. Add Assignment.");
                         System.out.println("2. Add Quiz.");
                         int opt = sc.nextInt();
+                        sc.nextLine();
                         if (opt == 1) {
                             System.out.println("Enter problem statement: ");
                             String prob = sc.nextLine();
@@ -408,7 +409,7 @@ class Backpack {
                         int count = 0;
                         HashMap<Integer, Integer> record = new HashMap<>();
                         System.out.println("Quizzes");
-                        for (int i = 0; i < quiz.size(); ++i) {
+                        for (int i = 0; i < quiz.size(); i++) {
                             if (stlist.get(m).getquiz().get(i).getistatus().equals("OPEN") && stlist.get(m).getquiz().get(i).getsstatus().equals("PENDING")) {
                                 System.out.println("ID: " + count + " " + quiz.get(i).getquiz()); 
                                 System.out.println("--------------------------------------");
@@ -417,7 +418,7 @@ class Backpack {
                             }    
                         }
                         System.out.println("Assignments");
-                        for (int i = 0; i < assess.size(); ++i) {
+                        for (int i = 0; i < assess.size(); i++) {
                             if (stlist.get(m).getassess().get(i).getistatus().equals("OPEN") && stlist.get(m).getassess().get(i).getsstatus().equals("PENDING")) {
                                 System.out.println("ID: " + (count) + " " + assess.get(i).getassess());     
                                 System.out.println("--------------------------------------"); 
@@ -428,17 +429,26 @@ class Backpack {
                         System.out.println("Enter ID of assessment: ");
                         int id = sc.nextInt();
                         sc.nextLine();
-                        if (record.get(id) < quiz.size()) {
+                        if (id < quiz.size()) {
+                            System.out.println(record.get(id));
                             System.out.println(quiz.get(record.get(id)).getquiz());
                             String ans = sc.nextLine();
                             stlist.get(m).getquiz().get(record.get(id)).setansw(ans);
                             stlist.get(m).getquiz().get(record.get(id)).setsstatus();
                         }
-                        else if (record.get(id) >= quiz.size() && record.get(id) < (quiz.size()+ assess.size())) {
+                        else if (id >= quiz.size() && id < (quiz.size()+ assess.size())) {
                             System.out.println("Enter filename of assignment: ");
                             String ans = sc.nextLine();
-                            stlist.get(m).getassess().get(record.get(id)).setansw(ans);
-                            stlist.get(m).getassess().get(record.get(id)).setsstatus();;
+                            if (ans.length() > 4) {
+                                if (ans.substring(ans.length() - 4, ans.length()).equals(".zip")) {
+                                    stlist.get(m).getassess().get(record.get(id)).setansw(ans);
+                                    stlist.get(m).getassess().get(record.get(id)).setsstatus();
+                                }
+                                else {
+                                    System.out.println("Wrong file format.");
+                                    continue;
+                                }
+                            }
                         }
 
                     }
@@ -473,7 +483,7 @@ class Backpack {
                             }
                         }
                     }
-                    else if (z == 7) {
+                    else if (z == 5) {
                         st.vwcomments(comments);
                     }
                     else if (z == 6) {
