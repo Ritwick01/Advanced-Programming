@@ -3,30 +3,64 @@ import java.sql.Timestamp;
 import java.util.Date;
 
 class assessment {
+    private String q;
+    private int num = 1;
+    private String istatus = "OPEN";
+    private String sstatus = "PENDING";
 
     public assessment(String ques) {
-
+        q = ques;
     }
 
     public assessment(String ques, int marks) {
-        
+        q = ques;
+        num = marks;
+    }
+
+    public String getquiz() {
+        return "Question: " + q;
+    }
+
+    public String getassess() {
+        return "Assignment: " + q + " Max Marks: " + Integer.toString(num);
+    }
+
+    public void setistatus() {
+        istatus = "CLOSED";
+    }
+
+    public String getistatus() {
+        return istatus;
+    }
+
+    public void setsstatus() {
+        sstatus = "SUBMITTED";
+    }
+
+    public String getsstatus() {
+        return sstatus;
     }
 }
 
 class Instructors implements Same {
+    private assessment as;
+
+    public void setstatus(assessment giv) {
+        as = giv;
+        as.setistatus();
+    }
 
 }
 
 class Backpack {
     private int intuct;
     private int stu;
+    private Instructors inst = new Instructors();
     private ArrayList<String> instructor = new ArrayList<>();
     private ArrayList<String> student = new ArrayList<>();
-    private ArrayList<String> matrial = new ArrayList<>();
-
-    public ArrayList<String> getmat() {
-        return matrial;
-    }
+    private ArrayList<String> matrial = new ArrayList<String>();
+    private ArrayList<assessment> quiz = new ArrayList<>();
+    private ArrayList<assessment> assess = new ArrayList<>();
 
     public void start() {
         Scanner sc = new Scanner(System.in);
@@ -85,14 +119,16 @@ class Backpack {
                         System.out.println("1. Add Lecture Slide.");
                         System.out.println("2. Add Lecture Video.");
                         int opt = sc.nextInt();
+                        sc.nextLine();
                         if (opt == 1) {
                             System.out.println("Enter topic of slides: ");
                             String name = sc.nextLine();
                             System.out.println("Enter number of slides: ");
                             int num = sc.nextInt();
-                            matrial.add("Title" + name);
+                            matrial.add(name);
                             matrial.add("Number of slides" + Integer.toString(num));
                             System.out.println("Enter content of slides: ");
+                            sc.nextLine();
                             for (int i = 0; i < num; i++) {
                                 System.out.print("Content of slide " + (i+1) + ":");
                                 matrial.add("Slide " + (i+1) + " " + sc.nextLine());
@@ -124,9 +160,60 @@ class Backpack {
                         System.out.println("2. Add Quiz.");
                         int opt = sc.nextInt();
                         if (opt == 1) {
-
+                            System.out.println("Enter problem statement: ");
+                            String prob = sc.nextLine();
+                            System.out.println("Enter max marks: ");
+                            int marks = sc.nextInt();
+                            assessment as = new assessment(prob, marks);
+                            assess.add(as);
+                        }
+                        else if (opt == 2) {
+                            System.out.println("Enter quiz question: ");
+                            String prob = sc.nextLine();
+                            assessment as = new assessment(prob);
+                            quiz.add(as);
                         }
 
+                    }
+                    else if (z == 3) {
+                        inst.vwlecmat(matrial);
+                    }
+                    else if (z == 4) {
+                        inst.vwassess(quiz, assess);
+                    }
+                    else if (z == 5) {
+
+                    }
+                    else if (z == 6) {
+                        System.out.println("List of open assessments: ");
+                        int count = 0;
+                        HashMap<Integer, Integer> record = new HashMap<>();
+                        System.out.println("Quizzes");
+                        for (int i = 0; i < quiz.size(); ++i) {
+                            if (quiz.get(i).getistatus().equals("OPEN")) {
+                                System.out.println("ID: " + count + " " + quiz.get(i).getquiz()); 
+                                System.out.println("--------------------------------------");
+                                record.put(count, i);
+                                count++;
+                            }    
+                        }
+                        System.out.println("Assignments");
+                        for (int i = 0; i < assess.size(); ++i) {
+                            if (assess.get(i).getistatus().equals("OPEN")) {
+                                System.out.println("ID: " + (count) + " " + assess.get(i).getassess());     
+                                System.out.println("--------------------------------------"); 
+                                record.put(count, i);
+                                count++; 
+                            }
+                        }
+                        System.out.println("Enter ID of assessment to close: ");
+                        int id = sc.nextInt();
+                        if (id < quiz.size()) {
+                            inst.setstatus(quiz.get(record.get(id)));
+                        }
+                        else if (id >= quiz.size() && id < (quiz.size()+ assess.size())) {
+                            inst.setstatus(assess.get(record.get(id)));
+                        }
                     }
                 }
             }
