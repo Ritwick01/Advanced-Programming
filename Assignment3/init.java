@@ -46,9 +46,9 @@ class Dice {
 class Game {
     private Player p1;
     private Dice dc;
+    private Scanner sc = new Scanner(System.in);
 
     public Game() {
-        Scanner sc = new Scanner(System.in);
         System.out.println("Enter the player name and hit enter");
         String name = sc.nextLine();
         sc.nextLine();
@@ -57,10 +57,32 @@ class Game {
         dc = new Dice();
     }
 
-    
+    public void gamestart() {
+        int start = dc.gettrow();
+        System.out.print("Hit enter to roll the dice");
+        sc.nextLine();
+        System.out.println("Dice gave " + start);
+        
+        while (start != 1) {
+            System.out.println("Game cannot start until you get 1");
+            System.out.println("Hit enter to roll the dice");
+            sc.nextLine();
+            start = dc.gettrow();
+            System.out.println("Dice gave " + start);
+        }
+        while (true) {
+            int n = dc.gettrow();
+            
+        }
+    }
+
 }
 
 
 public class init {
-    Game gm = new Game();
+    private Game gm = new Game();
+    public static void main(String[] args) {
+        init it = new init();
+        it.gm.gamestart();
+    }
 }
