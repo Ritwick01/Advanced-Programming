@@ -232,6 +232,7 @@ class Game {
             System.out.println("Dice gave " + start);
         }
         flr = new Floor(p1, false);
+        flr.usefloor();
         System.out.println("Game Over");
         System.out.println(p1.getname() + " accumulated " + p1.getpoints() + " points.");
 
