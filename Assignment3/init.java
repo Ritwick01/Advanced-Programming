@@ -241,11 +241,116 @@ class Game {
 
 }
 
+class Game2 {
+    private Dice dc;
+    private Player p;
+    private int n;
+    private Scanner sc = new Scanner(System.in);
+    private String name;
+    private Snake sk;
+    private KingCobra kc;
+    private Ladder ld;
+    private Elevator elv;
+    private Floor flr;
+    private Player[] arr;
+
+    public Game2() {
+        System.out.println("Enter the number of players: ");
+        n = sc.nextInt();
+        sc.nextLine();
+        arr = new Player[n];
+        for (int i = 0; i < n; i++) {
+            System.out.print("Enter the name of player: ");
+            name = sc.nextLine();
+            p = new Player(name);
+            arr[i] = p;
+        }
+        sc.nextLine();
+        System.out.println("The game setup is ready.");
+        dc = new Dice();
+    }
+
+    public void gamestart2() {
+        int mov = 0;
+        while (true) {
+            int start = dc.gettrow();
+            System.out.println();
+            System.out.print("Hit enter to roll the dice");
+            sc.nextLine();
+            System.out.println("Dice gave " + start);
+            if (arr[mov%n].getfloor() == -1 && start == 2) {
+                System.out.println("Game cannot start until you get 1");
+                mov++;
+                continue;
+            }
+            if (arr[mov%n].getfloor() == 12) {
+                if (start == 1) {
+                    flr = new Floor(arr[mov%n], false);
+                    flr.usefloor();
+                    System.out.println("Game Over");
+                    System.out.println(arr[mov%n].getname() + " wins the game with " + arr[mov%n].getpoints() + " points.");
+                    break;
+                }
+                else if (start == 2) {
+                    System.out.println("Player cannot move.");
+                    mov++;
+                    continue;
+                }
+            }
+            if (arr[mov%n].getfloor() + start == 2) {
+                elv = new Elevator(arr[mov%n]);
+                arr[mov%n].setfloor(2);
+                elv.usefloor();
+            }
+            else if (arr[mov%n].getfloor() + start == 8) {
+                ld = new Ladder(arr[mov%n]);
+                arr[mov%n].setfloor(8);
+                ld.usefloor();
+            }
+            else if (arr[mov%n].getfloor() + start == 5) {
+                sk = new Snake(arr[mov%n]);
+                arr[mov%n].setfloor(5);
+                sk.usefloor();
+            }
+            else if (arr[mov%n].getfloor() + start == 11) {
+                kc = new KingCobra(arr[mov%n]);
+                arr[mov%n].setfloor(11);
+                kc.usefloor();
+            }
+            else {
+                Boolean flag;
+                if (start == 1) {
+                    flag = false;
+                }
+                else {
+                    flag = true;
+                }
+                flr = new Floor(arr[mov%n], flag);
+                flr.usefloor();
+            }
+            mov++;
+        }
+        
+    }
+}
+
 
 public class init {
-    private Game gm = new Game();
     public static void main(String[] args) {
-        init it = new init();
-        it.gm.gamestart();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Game Modes available: ");
+        System.out.println("1. Single Player");
+        System.out.println("2. Multi-Player");
+        System.out.println("Enter choice of game mode: ");
+        int n = sc.nextInt();
+        if (n == 1) {
+            Game gm = new Game();
+            gm.gamestart();
+        }
+        else if (n == 2) {
+            Game2 gm2 = new Game2();
+            gm2.gamestart2();
+        }
+        sc.close();
     }
 }
