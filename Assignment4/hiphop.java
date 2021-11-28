@@ -91,6 +91,31 @@ class Player {
     }
 }
 
+class Calculator <T> {
+ 
+    public boolean calculDiv(T thing1, T thing2, T result) {
+        if (thing1 instanceof Integer && thing2 instanceof Integer) {
+            if (result.equals((int) thing1 / (int) thing2)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else if (thing1 instanceof String && thing2 instanceof String) {
+            if (result.equals((String)thing1 + (String)thing2)) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
+        else {
+            throw new IllegalArgumentException("Paramaters must be String or Integer.");
+        }
+    }
+}
+
 class Game {
     private Player p1;
     private TileMap tmap;
