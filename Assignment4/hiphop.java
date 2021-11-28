@@ -13,8 +13,8 @@ class Player {
         bucket = new ArrayList<Softtoys>();
     }
 
-    public void setchances(int n) {
-        chances = n;
+    public void decrementer() {
+        chances -= 1;
     }
 
     public int getchances() {
@@ -28,15 +28,15 @@ class Player {
     public ArrayList<Softtoys> returnbuck() {
         return bucket;
     }   
-}
 
-class Jumpcounter {
-
+    public int jump() {
+        Random rd = new Random();
+        return rd.nextInt(21) + 1;
+    }
 }
 
 class Game {
     private Player p1;
-    private Jumpcounter jc;
     private Scanner sc = new Scanner(System.in);
 
     public Game() {
@@ -44,7 +44,10 @@ class Game {
     }
 
     public void start() {
-
+        System.out.println("Game is ready");
+        while(p1.getchances() > 0) {
+            
+        }
     }
 }
 
