@@ -1,10 +1,33 @@
 import java.util.*;
 
+class Softtoys implements Cloneable {
+    private String name;
+    
+    public Softtoys(String naam) {
+        name = naam;
+    }
+
+    public String getname() {
+        return name;
+    }
+
+    public Softtoys clone() {
+        try {
+            Softtoys sft = (Softtoys) super.clone();
+            return sft;
+        }
+        catch (CloneNotSupportedException e) {
+            return null;
+        }
+    }
+}
+
 class TileMap {
     private HashMap<Integer, Softtoys> tilemap = new HashMap<>();
     private Player p1;
 
-    public TileMap() {
+    public TileMap(Player p) {
+        p1 = p;
         tilemap.put(1, new Softtoys("Teddy"));
         tilemap.put(2, new Softtoys("Donald Duck"));
         tilemap.put(3, new Softtoys("Mickey Mouse"));
@@ -27,19 +50,14 @@ class TileMap {
         tilemap.put(20, new Softtoys("Minion"));
     }
 
-
-}
-
-class Softtoys {
-    private String name;
-    
-    public Softtoys(String naam) {
-        name = naam;
+    public void pass_a_clone(int n) {
+        p1.addtoys(tilemap.get(n).clone());
     }
 
-    public String getname() {
-        return name;
+    public HashMap<Integer, Softtoys> returnmap() {
+        return tilemap;
     }
+
 }
 
 class Player {
@@ -75,11 +93,13 @@ class Player {
 
 class Game {
     private Player p1;
+    private TileMap tmap;
     private Scanner sc = new Scanner(System.in);
     private String[] arr = {"first", "second", "third", "fourth", "fifth"};
 
     public Game() {
         p1 = new Player();
+        tmap = new TileMap(p1);
     }
 
     public void decrementchances() {
@@ -89,7 +109,7 @@ class Game {
     public void start() {
         System.out.println("Game is ready");
         while(p1.getchances() > 0) {
-            System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + "try");
+            System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + " try");
             sc.nextLine();
             int n = p1.jump();
             if (n == 21) {
@@ -99,8 +119,19 @@ class Game {
             }
             System.out.println("You landed on tile " + n);
             if (n % 2 == 0) {
-
+                System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                tmap.pass_a_clone(n);
             }
+            else {
+                System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                tmap.pass_a_clone(n);
+            }
+            this.decrementchances();
+        }
+        System.out.println();
+        System.out.println("Soft toys won by you are: ");
+        for (Softtoys sft : p1.returnbuck()) {
+            System.out.print(sft.getname() + ", ");
         }
     }
 }
