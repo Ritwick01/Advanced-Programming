@@ -152,6 +152,8 @@ class Game {
     private Player p1;
     private TileMap tmap;
     private Questionbuilder qb;
+    private Calculator<Integer> cI = new Calculator<Integer>();
+    private Calculator<String> cS = new Calculator<String>();
     private Scanner sc = new Scanner(System.in);
     private String[] arr = {"first", "second", "third", "fourth", "fifth"};
 
@@ -167,106 +169,109 @@ class Game {
 
     public void start() {
         System.out.println("Game is ready");
-        while(p1.getchances() > 0) {
-            System.out.println("-------------------------------------------------");
-            try {
-                System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + " try");
-            }
-            catch (IndexOutOfBoundsException e) {
-                System.out.println("Index exceeded");
-            }
-            sc.nextLine();
-            int n = p1.jump();
-            if (n == 21) {
-                System.out.println("You are too energetic and zoomed past all the tiles. Muddy Puddle Splash!");
-                this.decrementchances();
-                continue;
-            }
-            System.out.println("You landed on tile " + n);
-            if (n % 2 == 0) {
-                System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
-                tmap.pass_a_clone(n);
-            }
-            else {
-                System.out.println("Question-answer round. Integer or String?");
-                String s = sc.nextLine();
-                while (!(s.equals("Integer") || s.equals("String"))) {
-                    System.out.println("Incorrect Input. Please try again.");
-                    s = sc.nextLine();
+        try {
+            while(p1.getchances() > 0) {
+                System.out.println("-------------------------------------------------");
+                try {
+                    System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + " try");
                 }
-                if (s.equals("Integer")) {
-                    int n1 = qb.intQ();
-                    int n2 = qb.intQ();
-                    System.out.println("Calculate the result of " + n1 + " divided by " + n2 + " (Round down any floating point results)");
-                    int res = Integer.MIN_VALUE;
-                    boolean flag = false;
-                    do {
-                        try {
-                            res = sc.nextInt();
-                            flag = true;
-                        }
-                        catch (InputMismatchException e) {
-                            System.out.println("Wrong Input type. Try Again.");
-                            sc.next();
-                        }
-                    } while (flag != true);
-                    Calculator<Integer> c = new Calculator<Integer>();
-                    if (c.calculDiv(n1, n2, res)) {
-                        System.out.println("Correct answer!!!");
-                        System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
-                        tmap.pass_a_clone(n);
-                        sc.nextLine();
-                    }
-                    else {
-                        System.out.println("Incorrect answer");
-                        System.out.println("You did not win any soft toy");
-                        sc.nextLine();
-                    }
+                catch (IndexOutOfBoundsException e) {
+                    System.out.println("Index exceeded");
                 }
-                else if (s.equals("String")) {
-                    String n1 = qb.strQ();
-                    String n2 = qb.strQ();
-                    System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
-                    String res = sc.nextLine();
-                    boolean flag = false;
-                    do {
+                sc.nextLine();
+                int n = p1.jump();
+                if (n == 21) {
+                    System.out.println("You are too energetic and zoomed past all the tiles. Muddy Puddle Splash!");
+                    this.decrementchances();
+                    continue;
+                }
+                System.out.println("You landed on tile " + n);
+                if (n % 2 == 0) {
+                    System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                    tmap.pass_a_clone(n);
+                }
+                else {
+                    System.out.println("Question-answer round. Integer or String?");
+                    String s = sc.nextLine();
+                    while (!(s.equals("Integer") || s.equals("String"))) {
+                        System.out.println("Incorrect Input. Please try again.");
+                        s = sc.nextLine();
+                    }
+                    if (s.equals("Integer")) {
+                        int n1 = qb.intQ();
+                        int n2 = qb.intQ();
+                        System.out.println("Calculate the result of " + n1 + " divided by " + n2 + " (Round down any floating point results)");
+                        int res = Integer.MIN_VALUE;
+                        boolean flag = false;
                         do {
                             try {
-                                if (((int)res.charAt(0) >= 32 && (int)res.charAt(0) <= 64) || ((int)res.charAt(0) >= 91 && (int)res.charAt(0) <= 96)) {
-                                    System.out.println("Incorrect Format: String Not Entered");
+                                res = sc.nextInt();
+                                flag = true;
+                            }
+                            catch (InputMismatchException e) {
+                                System.out.println("Wrong Input type. Try Again.");
+                                sc.next();
+                            }
+                        } while (flag != true);
+                        if (cI.calculDiv(n1, n2, res)) {
+                            System.out.println("Correct answer!!!");
+                            System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                            tmap.pass_a_clone(n);
+                            sc.nextLine();
+                        }
+                        else {
+                            System.out.println("Incorrect answer");
+                            System.out.println("You did not win any soft toy");
+                            sc.nextLine();
+                        }
+                    }
+                    else if (s.equals("String")) {
+                        String n1 = qb.strQ();
+                        String n2 = qb.strQ();
+                        System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
+                        String res = sc.nextLine();
+                        boolean flag = false;
+                        do {
+                            do {
+                                try {
+                                    if (((int)res.charAt(0) >= 32 && (int)res.charAt(0) <= 64) || ((int)res.charAt(0) >= 91 && (int)res.charAt(0) <= 96) || !res.matches("^[a-zA-Z]*$")) {
+                                        System.out.println("Incorrect Format: String Not Entered (Should only contain alphabets)");
+                                        System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
+                                        res = sc.nextLine();
+                                    }
+                                    else {
+                                        flag = true;
+                                    }
+                                }
+                                catch (StringIndexOutOfBoundsException e) {
+                                    System.out.println("Blank Line not supported");
                                     System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
                                     res = sc.nextLine();
                                 }
-                                else {
-                                    flag = true;
-                                }
-                            }
-                            catch (StringIndexOutOfBoundsException e) {
-                                System.out.println("Blank Line not supported");
-                                System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
-                                res = sc.nextLine();
-                            }
+                            } while (!flag);
                         } while (!flag);
-                    } while (!flag);
-                    Calculator<String> c = new Calculator<String>();
-                    if (c.calculDiv(n1, n2, res)) {
-                        System.out.println("Correct answer!!!");
-                        System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
-                        tmap.pass_a_clone(n);
-                    }
-                    else {
-                        System.out.println("Incorrect answer");
-                        System.out.println("You did not win any soft toy");
+                        if (cS.calculDiv(n1, n2, res)) {
+                            System.out.println("Correct answer!!!");
+                            System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                            tmap.pass_a_clone(n);
+                        }
+                        else {
+                            System.out.println("Incorrect answer");
+                            System.out.println("You did not win any soft toy");
+                        }
                     }
                 }
+                this.decrementchances();
             }
-            this.decrementchances();
+            System.out.println();
+            System.out.println("Game Over");
+            System.out.println("Soft toys won by you are: ");
+            for (Softtoys sft : p1.returnbuck()) {
+                System.out.print(sft.getname() + ", ");
+            }
         }
-        System.out.println();
-        System.out.println("Game Over");
-        System.out.println("Soft toys won by you are: ");
-        for (Softtoys sft : p1.returnbuck()) {
-            System.out.print(sft.getname() + ", ");
+        catch (NullPointerException e) {
+            System.out.println("System has encountered an error.");
         }
     }
 }
