@@ -64,7 +64,7 @@ class Questionbuilder {
     private Random rd = new Random();
 
     public int intQ() {
-        int n = rd.nextInt(2000) - 700;
+        int n = rd.nextInt();
         if (n == 0) {
             return 5;
         }
@@ -121,10 +121,16 @@ class Calculator <T> {
  
     public boolean calculDiv(T thing1, T thing2, T result) {
         if (thing1 instanceof Integer && thing2 instanceof Integer) {
-            if (result.equals((int) thing1 / (int) thing2)) {
-                return true;
+            try {
+                if (result.equals(Math.floorDiv(((int) thing1),((int) thing2)))) {
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
-            else {
+            catch (ArithmeticException e) {
+                System.out.println("Division by 0 not supported");
                 return false;
             }
         }
@@ -163,7 +169,12 @@ class Game {
         System.out.println("Game is ready");
         while(p1.getchances() > 0) {
             System.out.println("-------------------------------------------------");
-            System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + " try");
+            try {
+                System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + " try");
+            }
+            catch (IndexOutOfBoundsException e) {
+                System.out.println("Index exceeded");
+            }
             sc.nextLine();
             int n = p1.jump();
             if (n == 21) {
@@ -179,11 +190,26 @@ class Game {
             else {
                 System.out.println("Question-answer round. Integer or String?");
                 String s = sc.nextLine();
+                while (!(s.equals("Integer") || s.equals("String"))) {
+                    System.out.println("Incorrect Input. Please try again.");
+                    s = sc.nextLine();
+                }
                 if (s.equals("Integer")) {
                     int n1 = qb.intQ();
                     int n2 = qb.intQ();
                     System.out.println("Calculate the result of " + n1 + " divided by " + n2 + " (Round down any floating point results)");
-                    int res = sc.nextInt();
+                    int res = Integer.MIN_VALUE;
+                    boolean flag = false;
+                    do {
+                        try {
+                            res = sc.nextInt();
+                            flag = true;
+                        }
+                        catch (InputMismatchException e) {
+                            System.out.println("Wrong Input type. Try Again.");
+                            sc.next();
+                        }
+                    } while (flag != true);
                     Calculator<Integer> c = new Calculator<Integer>();
                     if (c.calculDiv(n1, n2, res)) {
                         System.out.println("Correct answer!!!");
@@ -202,6 +228,26 @@ class Game {
                     String n2 = qb.strQ();
                     System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
                     String res = sc.nextLine();
+                    boolean flag = false;
+                    do {
+                        do {
+                            try {
+                                if (((int)res.charAt(0) >= 32 && (int)res.charAt(0) <= 64) || ((int)res.charAt(0) >= 91 && (int)res.charAt(0) <= 96)) {
+                                    System.out.println("Incorrect Format: String Not Entered");
+                                    System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
+                                    res = sc.nextLine();
+                                }
+                                else {
+                                    flag = true;
+                                }
+                            }
+                            catch (StringIndexOutOfBoundsException e) {
+                                System.out.println("Blank Line not supported");
+                                System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
+                                res = sc.nextLine();
+                            }
+                        } while (!flag);
+                    } while (!flag);
                     Calculator<String> c = new Calculator<String>();
                     if (c.calculDiv(n1, n2, res)) {
                         System.out.println("Correct answer!!!");
