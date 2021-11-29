@@ -60,6 +60,32 @@ class TileMap {
 
 }
 
+class Questionbuilder {
+    private Random rd = new Random();
+
+    public int intQ() {
+        int n = rd.nextInt(2000) - 700;
+        if (n == 0) {
+            return 5;
+        }
+        else {
+            return n;
+        }
+    }
+
+    public String strQ() {
+        StringBuilder str = new StringBuilder(4);
+        for (int i = 0; i < 4; i++) {
+            int n = rd.nextInt((122-65) + 1) + 65;
+            if (n == 91 || n == 92 || n == 93 || n == 94 || n == 95 || n == 96) {
+                n = 97;
+            }
+            str.append((char) n);
+        }
+        return str.toString();
+    }
+}
+
 class Player {
     private int chances;
     private ArrayList<Softtoys> bucket;
@@ -119,12 +145,14 @@ class Calculator <T> {
 class Game {
     private Player p1;
     private TileMap tmap;
+    private Questionbuilder qb;
     private Scanner sc = new Scanner(System.in);
     private String[] arr = {"first", "second", "third", "fourth", "fifth"};
 
     public Game() {
         p1 = new Player();
         tmap = new TileMap(p1);
+        qb = new Questionbuilder();
     }
 
     public void decrementchances() {
@@ -134,6 +162,7 @@ class Game {
     public void start() {
         System.out.println("Game is ready");
         while(p1.getchances() > 0) {
+            System.out.println("-------------------------------------------------");
             System.out.println("Hit enter for your " + arr[5 - p1.getchances()] + " try");
             sc.nextLine();
             int n = p1.jump();
@@ -148,12 +177,47 @@ class Game {
                 tmap.pass_a_clone(n);
             }
             else {
-                System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
-                tmap.pass_a_clone(n);
+                System.out.println("Question-answer round. Integer or String?");
+                String s = sc.nextLine();
+                if (s.equals("Integer")) {
+                    int n1 = qb.intQ();
+                    int n2 = qb.intQ();
+                    System.out.println("Calculate the result of " + n1 + " divided by " + n2 + " (Round down any floating point results)");
+                    int res = sc.nextInt();
+                    Calculator<Integer> c = new Calculator<Integer>();
+                    if (c.calculDiv(n1, n2, res)) {
+                        System.out.println("Correct answer!!!");
+                        System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                        tmap.pass_a_clone(n);
+                        sc.nextLine();
+                    }
+                    else {
+                        System.out.println("Incorrect answer");
+                        System.out.println("You did not win any soft toy");
+                        sc.nextLine();
+                    }
+                }
+                else if (s.equals("String")) {
+                    String n1 = qb.strQ();
+                    String n2 = qb.strQ();
+                    System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
+                    String res = sc.nextLine();
+                    Calculator<String> c = new Calculator<String>();
+                    if (c.calculDiv(n1, n2, res)) {
+                        System.out.println("Correct answer!!!");
+                        System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
+                        tmap.pass_a_clone(n);
+                    }
+                    else {
+                        System.out.println("Incorrect answer");
+                        System.out.println("You did not win any soft toy");
+                    }
+                }
             }
             this.decrementchances();
         }
         System.out.println();
+        System.out.println("Game Over");
         System.out.println("Soft toys won by you are: ");
         for (Softtoys sft : p1.returnbuck()) {
             System.out.print(sft.getname() + ", ");
