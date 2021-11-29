@@ -230,26 +230,6 @@ class Game {
                         String n2 = qb.strQ();
                         System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
                         String res = sc.nextLine();
-                        boolean flag = false;
-                        do {
-                            do {
-                                try {
-                                    if (((int)res.charAt(0) >= 32 && (int)res.charAt(0) <= 64) || ((int)res.charAt(0) >= 91 && (int)res.charAt(0) <= 96) || !res.matches("^[a-zA-Z]*$")) {
-                                        System.out.println("Incorrect Format: String Not Entered (Should only contain alphabets)");
-                                        System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
-                                        res = sc.nextLine();
-                                    }
-                                    else {
-                                        flag = true;
-                                    }
-                                }
-                                catch (StringIndexOutOfBoundsException e) {
-                                    System.out.println("Blank Line not supported");
-                                    System.out.println("Calculate the concantenation of " + n1 + " and " + n2);
-                                    res = sc.nextLine();
-                                }
-                            } while (!flag);
-                        } while (!flag);
                         if (cS.calculDiv(n1, n2, res)) {
                             System.out.println("Correct answer!!!");
                             System.out.println("You won a " + tmap.returnmap().get(n).getname() + " soft toy.");
