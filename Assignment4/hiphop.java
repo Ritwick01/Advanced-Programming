@@ -1,5 +1,12 @@
 import java.util.*;
 
+class BucketEmptyError extends Exception {
+    
+    public BucketEmptyError (String msg) {
+        super(msg);
+    }
+}
+
 class Softtoys implements Cloneable {
     private String name;
     
@@ -167,7 +174,7 @@ class Game {
         p1.decrementer();
     }
 
-    public void start() {
+    public void start() throws BucketEmptyError{
         System.out.println("Game is ready");
         try {
             while(p1.getchances() > 0) {
@@ -246,8 +253,16 @@ class Game {
             System.out.println();
             System.out.println("Game Over");
             System.out.println("Soft toys won by you are: ");
-            for (Softtoys sft : p1.returnbuck()) {
-                System.out.print(sft.getname() + ", ");
+            try {
+                if (p1.returnbuck().size() == 0) {
+                    throw new BucketEmptyError("Sadly, you did not win anything. Better luck next.");
+                }
+                for (Softtoys sft : p1.returnbuck()) {
+                    System.out.print(sft.getname() + ", ");
+                }
+            }
+            catch (BucketEmptyError e) {
+                System.out.println(e.getMessage());
             }
         }
         catch (NullPointerException e) {
@@ -257,7 +272,7 @@ class Game {
 }
 
 public class hiphop {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws BucketEmptyError {
         Scanner sc = new Scanner(System.in);
         System.out.println("Hit Enter to initialise the game.");
         sc.nextLine();
